@@ -2,7 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import type z from "zod";
 import { signUpSchema } from "@/app/schemas/auth";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -17,7 +19,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 
 const SignUpPage = () => {
   const form = useForm({
@@ -28,6 +30,15 @@ const SignUpPage = () => {
       password: "",
     },
   });
+
+  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
+    await authClient.signUp.email({
+      email: data.email,
+      name: data.name,
+      password: data.password,
+    });
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -35,7 +46,7 @@ const SignUpPage = () => {
         <CardDescription>Create an account to get started</CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup className="gap-y-4">
             <Controller
               name="name"
@@ -43,7 +54,11 @@ const SignUpPage = () => {
               render={({ field, fieldState }) => (
                 <Field>
                   <FieldLabel>Full Name</FieldLabel>
-                  <Input placeholder="John Doe" {...field} />
+                  <Input
+                    aria-invalid={fieldState.invalid}
+                    placeholder="John Doe"
+                    {...field}
+                  />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -56,7 +71,12 @@ const SignUpPage = () => {
               render={({ field, fieldState }) => (
                 <Field>
                   <FieldLabel>Email</FieldLabel>
-                  <Input placeholder="john@doe.com" type="email" {...field} />
+                  <Input
+                    aria-invalid={fieldState.invalid}
+                    placeholder="john@doe.com"
+                    type="email"
+                    {...field}
+                  />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -69,7 +89,12 @@ const SignUpPage = () => {
               render={({ field, fieldState }) => (
                 <Field>
                   <FieldLabel>Password</FieldLabel>
-                  <Input placeholder="********" type="password" {...field} />
+                  <Input
+                    aria-invalid={fieldState.invalid}
+                    placeholder="********"
+                    type="password"
+                    {...field}
+                  />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
