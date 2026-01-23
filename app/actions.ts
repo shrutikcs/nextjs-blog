@@ -14,10 +14,6 @@ export async function createBlogAction(values: z.infer<typeof postSchema>) {
     throw new Error("something went wrong");
   }
 
-  console.log('-----------------------------------')
-  // const token = await getToken()
-  
-  
   await fetchAuthMutation(api.posts.createPost, {
     body: parsed.data.content,
     title: parsed.data.title,
