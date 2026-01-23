@@ -14,7 +14,8 @@
       "!dist",
       "!build",
       "!lib/utils.ts",
-      "!components/ui"
+      "!components/ui",
+      "!convex/_generated"
     ]
   },
   "formatter": {

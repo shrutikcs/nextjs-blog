@@ -1,11 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "convex/react";
 import { Loader2 } from "lucide-react";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import type z from "zod";
+import { createBlogAction } from "@/app/actions";
 import { postSchema } from "@/app/schemas/blog";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,10 +23,8 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { api } from "@/convex/_generated/api";
 
 export default function CreateRoute() {
-  const mutation = useMutation(api.posts.createPost);
   const [isPending, startTransition] = useTransition();
 
   const form = useForm({
@@ -39,10 +37,7 @@ export default function CreateRoute() {
 
   function onSubmit(values: z.infer<typeof postSchema>) {
     startTransition(async () => {
-      mutation({
-        body: values.content,
-        title: values.title,
-      });
+      await createBlogAction(values);
     });
   }
   return (
@@ -99,8 +94,6 @@ export default function CreateRoute() {
                   </Field>
                 )}
               />
-
-              
 
               <Button disabled={isPending}>
                 {isPending ? (
