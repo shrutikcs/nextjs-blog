@@ -6,6 +6,7 @@ import { authComponent } from "./auth";
 export const createPost = mutation({
   args: { title: v.string(), body: v.string() },
   handler: async (ctx, args) => {
+    // check if the user is authenticated
     const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) {
       throw new Error("not authenticated");
@@ -24,5 +25,17 @@ export const getPosts = query({
   handler: async (ctx) => {
     const posts = await ctx.db.query("posts").order("desc").collect();
     return posts;
+  },
+});
+
+export const generateImageUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+    if (!user) {
+      throw new Error("not authenticated");
+    }
+
+    return await ctx.storage.generateUploadUrl();
   },
 });
