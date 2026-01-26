@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         port: "",
       },
+      {
+        hostname: "capable-aardvark-944.convex.cloud",
+        protocol: "https",
+        port: "",
+      },
     ],
   },
 };

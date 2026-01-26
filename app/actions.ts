@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type z from "zod";
 import { api } from "@/convex/_generated/api";
@@ -7,16 +8,43 @@ import { fetchAuthMutation } from "@/lib/auth-server";
 import { postSchema } from "./schemas/blog";
 
 export async function createBlogAction(values: z.infer<typeof postSchema>) {
-  const parsed = postSchema.safeParse(values);
+  try {
+    const parsed = postSchema.safeParse(values);
 
-  if (!parsed.success) {
-    throw new Error("something went wrong");
+    if (!parsed.success) {
+      throw new Error("something went wrong");
+    }
+
+    const imageUrl = await fetchAuthMutation(
+      api.posts.generateImageUploadUrl,
+      {},
+    );
+
+    const uploadResult = await fetch(imageUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": parsed.data.image.type,
+      },
+      body: parsed.data.image,
+    });
+
+    if (!uploadResult.ok) {
+      return {
+        error: "failed to upload image",
+      };
+    }
+
+    const { storageId } = await uploadResult.json();
+    await fetchAuthMutation(api.posts.createPost, {
+      body: parsed.data.content,
+      title: parsed.data.title,
+      imageStorageId: storageId,
+    });
+  } catch {
+    return {
+      error: "failed to create post",
+    };
   }
-
-  await fetchAuthMutation(api.posts.createPost, {
-    body: parsed.data.content,
-    title: parsed.data.title,
-  });
-
-  return redirect("/");
+  revalidatePath("/blog");
+  return redirect("/blog");
 }

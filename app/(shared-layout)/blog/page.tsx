@@ -7,6 +7,9 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 
+export const dynamic = "force-static";
+//export const revalidate = 30
+
 const BlogPage = () => {
   return (
     <div className="py-12">
@@ -26,7 +29,6 @@ const BlogPage = () => {
 };
 
 const LoadBlogList = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 5000));
   const data = await fetchQuery(api.posts.getPosts);
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -34,10 +36,13 @@ const LoadBlogList = async () => {
         <Card key={post._id} className="pt-0">
           <div className="h-48 w-full overflow-hidden relative">
             <Image
-              className="rounded-t-lg"
+              className="rounded-t-4xl object-cover"
               fill
               alt="leaf"
-              src="https://images.unsplash.com/photo-1760479099297-90f851fb0474?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={
+                post.imageUrl ??
+                "https://images.unsplash.com/photo-1760479099297-90f851fb0474?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              }
             />
           </div>
           <CardContent>
