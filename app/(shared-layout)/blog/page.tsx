@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { fetchQuery } from "convex/nextjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +10,13 @@ import { api } from "@/convex/_generated/api";
 
 export const dynamic = "force-static";
 //export const revalidate = 30
+// 
+export const metadata: Metadata = {
+  title: "Blog | NextPro",
+  description: "Read our latest articles and insights.",
+  category: "Web Development",
+  authors: [{name: "Shrutik Meshram"}]
+};
 
 const BlogPage = () => {
   return (

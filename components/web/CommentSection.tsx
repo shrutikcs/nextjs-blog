@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "convex/react";
+import { Preloaded, useMutation, usePreloadedQuery, useQuery } from "convex/react";
 import { Loader2, MessageSquare } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useTransition } from "react";
@@ -11,13 +11,18 @@ import { commentSchema } from "@/app/schemas/comments";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
+import { Separator } from "../ui/separator";
 import { Textarea } from "../ui/textarea";
 
-const CommentSection = () => {
-  const [isPending, startTransition] = useTransition();
+const CommentSection = (props: {
+  preloadedComments: Preloaded<typeof api.comments.getCommentsByPostId>;
+}) => {
   const params = useParams<{ postId: Id<"posts"> }>();
+  const data = usePreloadedQuery(props.preloadedComments);
+  const [isPending, startTransition] = useTransition();
 
   const createComment = useMutation(api.comments.createComments);
 
@@ -40,46 +45,82 @@ const CommentSection = () => {
       }
     });
   }
+  if (data?.length === undefined) {
+    return <p>loading...</p>
+  }
+    return (
+      <Card>
+        <CardHeader className="flex flex-row items-center gap-2 border-b">
+          <MessageSquare className="size-5" />
+          <h2 className="text-xl font-bold">{data.length} Comments</h2>
+        </CardHeader>
+        <CardContent className="space-y-8">
+          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+            <Controller
+              name="body"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field>
+                  <FieldLabel>Full Name</FieldLabel>
+                  <Textarea
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Share your thoughts"
+                    {...field}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Button disabled={isPending}>
+              {isPending ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  <span>Posting...</span>
+                </>
+              ) : (
+                <span>Comment</span>
+              )}
+            </Button>
+          </form>
 
-  return (
-    <Card>
-      <CardHeader className="flex flex-row items-center gap-2 border-b">
-        <MessageSquare className="size-5" />
-        <h2 className="text-xl font-bold"> Comments</h2>
-      </CardHeader>
-      <CardContent>
-        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-          <Controller
-            name="body"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field>
-                <FieldLabel>Full Name</FieldLabel>
-                <Textarea
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Share your thoughts"
-                  {...field}
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-          <Button disabled={isPending}>
-            {isPending ? (
-              <>
-                <Loader2 className="size-4 animate-spin" />
-                <span>Posting...</span>
-              </>
-            ) : (
-              <span>Post</span>
-            )}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
-  );
+          {data?.length > 0 && <Separator />}
+
+          <section className="space-y-6">
+            {data?.map((comment) => (
+              <div className="flex gap-4" key={comment._id}>
+                <Avatar className="size-10 shrink-0">
+                  <AvatarImage
+                    src={`https://avatar.vercel.sh/${comment.authorName}`}
+                    alt={comment.authorName}
+                  />
+                  <AvatarFallback>
+                    {comment.authorName.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <p className="font-semibold text-sm">
+                      {comment.authorName}
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      {new Date(comment._creationTime).toLocaleDateString(
+                        "en-IN",
+                      )}
+                    </p>
+                  </div>
+
+                  <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">
+                    {comment.body}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </section>
+        </CardContent>
+      </Card>
+    );
 };
 
 export default CommentSection;

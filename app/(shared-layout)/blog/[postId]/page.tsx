@@ -1,4 +1,4 @@
-import { fetchQuery } from "convex/nextjs";
+import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,16 +7,38 @@ import { Separator } from "@/components/ui/separator";
 import CommentSection from "@/components/web/CommentSection";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { Metadata } from "next";
 
-interface PostIdRouteParams {
+interface PostIdRouteProps {
   params: Promise<{
     postId: Id<"posts">;
   }>;
 }
 
-const PostIdRoute = async ({ params }: PostIdRouteParams) => {
+export async function generateMetadata({ params }: PostIdRouteProps): Promise<Metadata> {
   const { postId } = await params;
   const post = await fetchQuery(api.posts.getPostbyId, { postId: postId });
+  if (!post) {
+    return {
+      title: "Post Not Found"
+    }
+  }
+  return {
+    title: post.title,
+    description: post.body
+  }
+}
+
+const PostIdRoute = async ({ params }: PostIdRouteProps) => {
+  const { postId } = await params;
+
+  const [post, preloadedComments] = await Promise.all([
+    await fetchQuery(api.posts.getPostbyId, { postId: postId }),
+    await preloadQuery(api.comments.getCommentsByPostId, {
+      postId: postId,
+    }),
+  ]);
+
   if (!post) {
     return (
       <div>
@@ -69,7 +91,7 @@ const PostIdRoute = async ({ params }: PostIdRouteParams) => {
         </p>
 
         <Separator className="my-8" />
-        <CommentSection />
+        <CommentSection preloadedComments={preloadedComments} />
       </div>
     </div>
   );
