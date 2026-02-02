@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 
 const SignUpPage = () => {
   const [isPending, startTransition] = useTransition();
@@ -129,6 +130,11 @@ const SignUpPage = () => {
             </Button>
           </FieldGroup>
         </form>
+        <CardDescription className="mt-2">
+          <Link href="/auth/login">
+            Already a user? <span className="underline">Login</span>
+          </Link>
+        </CardDescription>
       </CardContent>
     </Card>
   );

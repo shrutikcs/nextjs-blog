@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 
 const Login = () => {
   const [isPending, startTransition] = useTransition();
@@ -110,6 +111,11 @@ const Login = () => {
             </Button>
           </FieldGroup>
         </form>
+        <CardDescription className="mt-2">
+          <Link href="/auth/sign-up">
+            New here? <span className="underline">Create Account</span>
+          </Link>
+        </CardDescription>
       </CardContent>
     </Card>
   );
