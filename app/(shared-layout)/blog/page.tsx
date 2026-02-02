@@ -1,21 +1,24 @@
-import type { Metadata } from 'next';
 import { fetchQuery } from "convex/nextjs";
+import type { Metadata } from "next";
+import { cacheTag } from "next/cache";
+import { cacheLife } from "next/dist/server/use-cache/cache-life";
 import Image from "next/image";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 
-export const dynamic = "force-static";
-//export const revalidate = 30
-// 
+// export const dynamic = "force-static";
+// export const revalidate = 30
+//
 export const metadata: Metadata = {
   title: "Blog | NextPro",
   description: "Read our latest articles and insights.",
   category: "Web Development",
-  authors: [{name: "Shrutik Meshram"}]
+  authors: [{ name: "Shrutik Meshram" }],
 };
 
 const BlogPage = () => {
@@ -29,15 +32,19 @@ const BlogPage = () => {
           Insights, thoughts, and trends from our team.
         </p>
       </div>
-      <Suspense fallback={<SkeletonLoadingUi />}>
-        <LoadBlogList />
-      </Suspense>
+      {/*<Suspense fallback={<SkeletonLoadingUi />}>*/}
+      <LoadBlogList />
+      {/*</Suspense>*/}
     </div>
   );
 };
 
 const LoadBlogList = async () => {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("blog");
   const data = await fetchQuery(api.posts.getPosts);
+
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {data?.map((post) => (

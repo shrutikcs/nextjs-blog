@@ -1,13 +1,16 @@
 import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { ArrowLeft } from "lucide-react";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import CommentSection from "@/components/web/CommentSection";
+import PostPresence from "@/components/web/PostPresence";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import { Metadata } from "next";
+import { fetchAuthQuery } from "@/lib/auth-server";
 
 interface PostIdRouteProps {
   params: Promise<{
@@ -15,29 +18,36 @@ interface PostIdRouteProps {
   }>;
 }
 
-export async function generateMetadata({ params }: PostIdRouteProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PostIdRouteProps): Promise<Metadata> {
   const { postId } = await params;
   const post = await fetchQuery(api.posts.getPostbyId, { postId: postId });
   if (!post) {
     return {
-      title: "Post Not Found"
-    }
+      title: "Post Not Found",
+    };
   }
   return {
     title: post.title,
-    description: post.body
-  }
+    description: post.body,
+  };
 }
 
 const PostIdRoute = async ({ params }: PostIdRouteProps) => {
   const { postId } = await params;
 
-  const [post, preloadedComments] = await Promise.all([
+  const [post, preloadedComments, userId] = await Promise.all([
     await fetchQuery(api.posts.getPostbyId, { postId: postId }),
     await preloadQuery(api.comments.getCommentsByPostId, {
       postId: postId,
     }),
+    await fetchAuthQuery(api.presence.getUserId),
   ]);
+
+  if (!userId) {
+    return redirect("/auth/login");
+  }
 
   if (!post) {
     return (
@@ -81,7 +91,7 @@ const PostIdRoute = async ({ params }: PostIdRouteProps) => {
             Posted on:{" "}
             {new Date(post._creationTime).toLocaleDateString("en-IN")}
           </p>
-          {/*{userId && <PostPresence roomId={post._id} userId={userId} />}*/}
+          {userId && <PostPresence roomId={post._id} userId={userId} />}
         </div>
 
         <Separator className="my-8" />

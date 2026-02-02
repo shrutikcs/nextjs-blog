@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import type z from "zod";
 import { api } from "@/convex/_generated/api";
@@ -45,6 +45,6 @@ export async function createBlogAction(values: z.infer<typeof postSchema>) {
       error: "failed to create post",
     };
   }
-  revalidatePath("/blog");
+  updateTag("blog");
   return redirect("/blog");
 }

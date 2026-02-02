@@ -68,7 +68,7 @@ export default function CreateRoute() {
                     <FieldLabel>Title</FieldLabel>
                     <Input
                       aria-invalid={fieldState.invalid}
-                      placeholder="super cool title"
+                      placeholder="Super cool title"
                       {...field}
                     />
                     {fieldState.invalid && (

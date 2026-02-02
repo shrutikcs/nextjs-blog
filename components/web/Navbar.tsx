@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { Button, buttonVariants } from "../ui/button";
+import { SearchInput } from "./SearchInput";
 import { ThemeToggle } from "./Theme-toggle";
 
 const Navbar = () => {
@@ -15,7 +16,7 @@ const Navbar = () => {
       <div className="flex items-center gap-8">
         <Link href="/">
           <h1 className="text-3xl font-bold">
-            Next <span className="text-primary">Pro</span>
+            Blog<span className="text-primary outline-1">ify</span>
           </h1>
         </Link>
         <div className="flex items-center gap-2">
@@ -31,6 +32,9 @@ const Navbar = () => {
         </div>
       </div>
       <div className="flex items-center gap-2">
+        <div className="hidden md:block mr-2">
+          <SearchInput />
+        </div>
         {isLoading ? null : isAuthenticated ? (
           <Button
             onClick={() => {
