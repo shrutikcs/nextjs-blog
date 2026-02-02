@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  cacheComponents: true,
+  // cacheComponents: true, // Disabled due to compatibility issues with better-auth
   reactCompiler: true,
   images: {
     remotePatterns: [
