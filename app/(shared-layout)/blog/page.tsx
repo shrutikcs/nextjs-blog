@@ -15,7 +15,7 @@ import { api } from "@/convex/_generated/api";
 // export const revalidate = 30
 //
 export const metadata: Metadata = {
-  title: "Blog | NextPro",
+  title: "Blog | Blogify",
   description: "Read our latest articles and insights.",
   category: "Web Development",
   authors: [{ name: "Shrutik Meshram" }],
