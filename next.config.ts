@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
         port: "",
       },
       {
-        hostname: "https://capable-jellyfish-57.convex.cloud",
+        hostname: "capable-jellyfish-57.convex.cloud",
         protocol: "https",
         port: "",
       },
