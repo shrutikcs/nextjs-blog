@@ -176,7 +176,7 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="py-8 sm:py-12 border-t border-border">
-        <div className="flex flex-col items-center gap-4 sm:gap-6 text-center">
+        <div className="flex justify-between items-center gap-4 sm:gap-6 text-center">
           <div className="flex items-center gap-2">
             <span className="text-xl sm:text-2xl font-bold">
               Blog<span className="text-primary">ify</span>
