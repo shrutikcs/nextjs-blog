@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Blogify | Beautiful Blogs",
+  title: "Blogstify | Beautiful Blogs",
   description:
     "Share your thoughts, discover new ideas, and connect with a community of passionate writers.",
 };

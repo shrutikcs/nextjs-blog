@@ -17,7 +17,7 @@ export default function HomePage() {
           <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold tracking-tight leading-tight">
             Welcome to{" "}
             <span className="bg-linear-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-              Blog<span className="outline-1">ify</span>
+              Blogs<span className="outline-1">tify</span>
             </span>
           </h1>
           <p className="text-base sm:text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-2">
@@ -52,7 +52,7 @@ export default function HomePage() {
       <section className="py-12 sm:py-20 md:py-28">
         <div className="text-center mb-10 sm:mb-16 px-2">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
-            Why Choose Blogify?
+            Why Choose Blogstify?
           </h2>
           <p className="text-muted-foreground text-base sm:text-lg max-w-xl mx-auto">
             Everything you need to share your stories with the world.
@@ -183,7 +183,7 @@ export default function HomePage() {
             </span>
           </div>
           <p className="text-muted-foreground text-xs sm:text-sm">
-            © 2026 Blogify. All rights reserved.
+            © 2026 Blogstify. All rights reserved.
           </p>
           <div className="flex gap-4">
             <Link

@@ -16,7 +16,7 @@ const Navbar = () => {
       <div className="flex items-center gap-8">
         <Link href="/">
           <h1 className="text-3xl font-bold">
-            Blog<span className="text-primary outline-1">ify</span>
+            Blogs<span className="text-primary outline-1">tify</span>
           </h1>
         </Link>
         <div className="flex items-center gap-2">
@@ -31,7 +31,7 @@ const Navbar = () => {
           </Link>
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="sm:flex hidden items-center gap-2">
         <div className="hidden md:block mr-2">
           <SearchInput />
         </div>
